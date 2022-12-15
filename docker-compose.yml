@@ -1,0 +1,13 @@
+services:
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      target: dev
+    ports:
+      - 8080:8080
+    volumes:
+      - ./src:/usr/app/src
+      - ./target:/usr/app/target
+    command: /bin/sh -c "cargo watch -x fmt -s 'mold -run cargo run'"
