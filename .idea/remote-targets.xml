@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteTargetsManager">
+    <option name="projectDefaultTargetUuid" value="7f6e0c18-692f-44af-8b27-6e13197e44bb" />
+    <targets>
+      <target name="test:latest" type="docker" uuid="ee835527-f3a3-4d56-a0e5-2e5be5195e41">
+        <config>
+          <option name="targetPlatform">
+            <TargetPlatform />
+          </option>
+          <option name="buildImageConfig">
+            <BuildImageConfig>
+              <option name="dockerFile" value="docker/Dockerfile" />
+            </BuildImageConfig>
+          </option>
+          <option name="containerConfig">
+            <ContainerConfig>
+              <option name="runCliOptions" value="--rm -p 8080:8080 --init" />
+            </ContainerConfig>
+          </option>
+          <option name="projectRootOnTarget" value="/usr/src/app" />
+          <option name="pullImageConfig">
+            <PullImageConfig>
+              <option name="tagToPull" value="test:latest" />
+            </PullImageConfig>
+          </option>
+        </config>
+        <ContributedStateBase type="RsLanguageRuntime">
+          <config />
+        </ContributedStateBase>
+      </target>
+      <target name="dev" type="docker" uuid="7f6e0c18-692f-44af-8b27-6e13197e44bb">
+        <config>
+          <option name="targetPlatform">
+            <TargetPlatform />
+          </option>
+          <option name="buildImageConfig">
+            <BuildImageConfig>
+              <option name="buildArgs" value="--target=executer" />
+              <option name="dockerFile" value="docker/Dockerfile" />
+            </BuildImageConfig>
+          </option>
+          <option name="buildNotPull" value="false" />
+          <option name="containerConfig">
+            <ContainerConfig>
+              <option name="runCliOptions" value="--init -it --rm -p 8080:8080 -v src/main.rs:/usr/app/main.rs --name app" />
+            </ContainerConfig>
+          </option>
+          <option name="projectRootOnTarget" value="/usr/app" />
+          <option name="pullImageConfig">
+            <PullImageConfig>
+              <option name="tagToPull" value="lsh4141995/rust-study:dev" />
+            </PullImageConfig>
+          </option>
+        </config>
+        <ContributedStateBase type="RsLanguageRuntime">
+          <config />
+        </ContributedStateBase>
+      </target>
+    </targets>
+  </component>
+</project>
