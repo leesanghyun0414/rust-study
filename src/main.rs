@@ -1,180 +1,92 @@
-use std::io::{Result, Write};
-use std::ops::Neg;
-use std::ops::{Deref, DerefMut, Drop};
-mod first_mod;
+use std::collections::HashMap;
+use std::fmt;
+use std::fmt::Formatter;
+
+const NUM: i128 = 4564564564654865;
 
 fn main() {
-    let mut raw = 10;
-    raw = -raw;
-    println!("{}", raw);
-    let dj = first_mod::Dj {
-        name: "".to_string(),
-        music_genre: vec!["f".to_string()],
-    };
-    println!("{} : {}", dj.name, dj.music_genre[0]);
-    let le = Vec::<i32>::with_capacity(100);
-    for el in le {
-        println!("{}", el.to_string());
-    }
-
-    let is_even = |x: u64| -> bool { x % 2 == 0 };
-    assert_eq!(is_even(12), true);
-
-    let hokey = Broom {
-        name: "Hokey".to_string(),
-        height: 100,
-        health: 100,
+    let mv = vec![1];
+    let _mv2 = mv.clone();
+    let from = 1;
+    let _on = from;
+    println!("{}", from);
+    let fruit = FruitProduct {
+        name: "Banana".to_string(),
+        price: 1000,
+        quality: ProductQuality::High,
     };
 
-    let (hokey1, hokey2) = chop(hokey);
-    assert_eq!(hokey1.name, "Hokey I");
-    assert_eq!(hokey1.health, 100);
-
-    assert_eq!(hokey2.name, "Hokey II");
-    assert_eq!(hokey2.health, 100);
-
-    let range_num = 1..9;
-    let collected_range = collect_into_vector(range_num);
-    for num in collected_range {
-        println!("{}", num.to_string());
-    }
-    let a = "aa".to_string();
-    let b = &a;
-    println!("{}", b);
-    let wine = Appellation {
-        name: "A".to_string(),
-        nicknames: vec!["S".to_string(), "f".to_string()],
-    };
-    println!("{}", wine.name);
-
-    let tree = Mangrove {};
-    tree.branch();
-    Mangrove::big_branch();
-    let lotto_slot = Selector {
-        elements: vec![1, 2, 3, 5, 4, 44, 88],
-        current: 0,
-    };
-    println!("{}", *lotto_slot);
+    // println!("{} {} {}", fruit.name, fruit.price, fruit.quality);
+    print!("{}", fruit.name);
+    println!("test");
+    let oo = triangle(NUM);
+    let oo2 = built_in_triangle(NUM);
 }
 
-fn chop(b: Broom) -> (Broom, Broom) {
-    let mut broom1 = Broom {
-        height: b.height / 2,
-        ..b
-    };
-    let mut broom2 = Broom {
-        name: broom1.name.clone(),
-        ..broom1
-    };
-
-    broom1.name.push_str(" I");
-    broom2.name.push_str(" II");
-
-    (broom1, broom2)
+#[derive(Debug)]
+enum ProductQuality {
+    High,
 }
 
-struct Broom {
+impl fmt::Display for ProductQuality {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "Fruit")
+    }
+}
+
+struct FruitProduct {
     name: String,
-    height: u32,
-    health: u32,
+    price: usize,
+    quality: ProductQuality,
 }
 
-pub struct Sink;
-
-impl Write for Sink {
-    fn write(&mut self, buf: &[u8]) -> Result<usize> {
-        Ok(buf.len())
-    }
-
-    fn flush(&mut self) -> Result<()> {
-        Ok(())
-    }
+trait FruitQualityManager {
+    fn count_selected_products<F>(fruits: &Vec<FruitProduct>, test_fn: F) -> usize
+    where
+        F: Fn(&FruitProduct) -> bool;
 }
 
-trait MyIterator {
-    type Item;
-
-    fn next(&mut self) -> Option<Self::Item>;
+struct Request {
+    method: String,
+    url: String,
+    headers: HashMap<String, String>,
+    body: Vec<u8>,
 }
 
-#[derive(Clone, Copy, Debug)]
-struct Complex<T> {
-    /// Real portion of the complex number.
-    re: T,
-
-    /// Imaginary portion of the complex number.
-    im: T,
+struct Response {
+    code: u32,
+    headers: HashMap<String, String>,
+    body: Vec<u8>,
 }
 
-fn collect_into_vector<I: Iterator>(iter: I) -> Vec<I::Item> {
-    let mut results = Vec::new();
-    for value in iter {
-        results.push(value);
-    }
-    results
+type BoxedCallback = Box<dyn Fn(&Request) -> Response>;
+struct BasicRouter {
+    routes: HashMap<String, BoxedCallback>,
 }
 
-impl<T, O> Neg for Complex<T>
-where
-    T: Neg<Output = O>,
-{
-    type Output = Complex<O>;
-    fn neg(self) -> Complex<O> {
-        Complex {
-            re: -self.re,
-            im: -self.im,
+impl BasicRouter {
+    fn new() -> BasicRouter {
+        BasicRouter {
+            routes: HashMap::new(),
         }
     }
-}
 
-struct Appellation {
-    name: String,
-    nicknames: Vec<String>,
-}
-
-impl Drop for Appellation {
-    fn drop(&mut self) {
-        println!("Dropping {}", self.name);
-        if !self.nicknames.is_empty() {
-            print!(" (AKA {})", self.nicknames.join(", "));
-        }
-        println!();
+    fn add_route<C>(&mut self, url: &str, callback: C)
+    where
+        C: Fn(&Request) -> Response + 'static,
+    {
+        self.routes.insert(url.to_string(), Box::new(callback));
     }
 }
 
-struct Selector<T> {
-    elements: Vec<T>,
-    current: usize,
-}
-
-impl<T> Deref for Selector<T> {
-    type Target = T;
-
-    fn deref(&self) -> &T {
-        &self.elements[self.current]
+fn triangle(n: i128) -> i128 {
+    let mut sum = 0;
+    for i in 1..n + 1 {
+        sum += i;
     }
+    sum
 }
 
-impl<T> DerefMut for Selector<T> {
-    fn deref_mut(&mut self) -> &mut T {
-        &mut self.elements[self.current]
-    }
+fn built_in_triangle(n: i128) -> i128 {
+    (1..n + 1).fold(0, |sum, item| sum + item)
 }
-
-trait Tree {
-    fn branch(&self) {
-        println!("ss")
-    }
-}
-
-trait BigTree: Tree {
-    fn big_branch() {
-        println!("It's big.")
-    }
-}
-
-struct Mangrove;
-
-impl Tree for Mangrove {}
-
-impl BigTree for Mangrove {}
