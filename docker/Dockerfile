@@ -20,7 +20,7 @@ RUN cargo install --path .
 
 
 
-FROM rust:${RUST_TAG} as executer
+FROM rust:${RUST_TAG} as executor
 
 ARG WORKDIR
 
