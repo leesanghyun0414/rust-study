@@ -12,6 +12,7 @@ checksum = "aae1277d39aeec15cb388266ecc24b11c80469deae6067e17a1a7aa9e5c1f234"
 name = "app"
 version = "0.1.0"
 dependencies = [
+ "channel",
  "crossbeam",
  "mandelbrot",
  "num",
@@ -41,6 +42,10 @@ name = "cfg-if"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
+
+[[package]]
+name = "channel"
+version = "0.1.0"
 
 [[package]]
 name = "color_quant"

@@ -4,12 +4,6 @@ extern crate rayon;
 use rayon::prelude::*;
 /// test
 fn main() {
-    let v = vec![4, 20, 111];
-    let mut ite = v.iter();
-    assert_eq!(ite.next(), Some(&4));
-    let mut outer = "012345".to_string();
-    String::from_iter(outer.drain(1..4));
-
     let args: Vec<String> = std::env::args().collect();
 
     let bounds = parse_pair(&args[2], 'x').expect("t");
